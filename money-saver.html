@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no">
@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 <!-- PWA -->
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#121815">
+<meta name="theme-color" content="#0e1210">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,29 +22,45 @@
   --green: #22c55e;
   --green-bright: #10b981;
   --green-light: #34d399;
-  --green-soft: #d1fae5;
-  --green-deep: #047857;
+  --green-soft: rgba(34, 197, 94, 0.15);
+  --green-deep: #059669;
   --green-glow: rgba(34, 197, 94, 0.35);
-  --green-gradient: linear-gradient(135deg, #22c55e 0%, #059669 100%);
-  --dark-gradient: linear-gradient(145deg, #131916 0%, #0a0e0c 100%);
-  --ink: #0f1715;
-  --ink-soft: #2d3733;
-  --card-dark: #121815;
-  --bg: #f5f7f6;
-  --white: #ffffff;
-  --grey: #86928e;
-  --grey-light: #f0f3f2;
-  --grey-line: #e2e7e5;
+  --green-gradient: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
+  --dark-gradient: linear-gradient(145deg, #151c18 0%, #0a0e0c 100%);
+  
+  /* Dark Theme Colors (Default) */
+  --bg: #0e1210;
+  --card-bg: #151c18;
+  --card-dark: #0a0d0c;
+  --ink: #f1f5f3;
+  --ink-soft: #cbd5e1;
+  --grey: #8a9692;
+  --grey-light: #1c2521;
+  --grey-line: rgba(255,255,255,0.08);
   --danger: #ef4444;
   --radius: 28px;
   --radius-sm: 20px;
+  --shadow-sm: 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-md: 0 10px 30px rgba(0,0,0,0.3);
+  --shadow-lg: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+[data-theme="light"] {
+  --bg: #f4f6f5;
+  --card-bg: #ffffff;
+  --card-dark: #121815;
+  --ink: #0f1715;
+  --ink-soft: #334155;
+  --grey: #86928e;
+  --grey-light: #f0f3f2;
+  --grey-line: #e2e7e5;
   --shadow-sm: 0 4px 16px rgba(0,0,0,0.03);
   --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
   --shadow-lg: 0 20px 50px rgba(0,0,0,0.12);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;}
-html,body{height:100%;background:#0b0e0d;}
+html,body{height:100%;background:#060807;}
 body{
   display:flex;align-items:center;justify-content:center;
   min-height:100vh;padding:16px;
@@ -67,6 +83,7 @@ svg.icon{
   border-radius:52px;
   box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 12px #0a0a0a,0 0 0 14px #262626;
   position:relative;overflow:hidden;display:flex;flex-direction:column;
+  transition:background .3s;
 }
 .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:30px;background:#0a0a0a;border-bottom-left-radius:20px;border-bottom-right-radius:20px;z-index:60;}
 .statusbar{height:50px;flex:0 0 50px;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px;font-size:14px;font-weight:700;z-index:50;color:var(--ink);}
@@ -85,16 +102,16 @@ svg.icon{
 /* ---------- Header Top Bar ---------- */
 .top{display:flex;align-items:center;justify-content:space-between;padding:8px 0 16px;}
 .hello{display:flex;align-items:center;gap:12px;cursor:pointer;padding:4px 8px;margin-left:-8px;border-radius:24px;transition:all .2s;}
-.hello:hover{background:rgba(255,255,255,.8);}
+.hello:hover{background:var(--grey-soft);}
 .hello:active{transform:scale(.97);}
-.avatar{width:46px;height:46px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 46px;box-shadow:0 4px 14px rgba(0,0,0,.08);border:2px solid #fff;overflow:hidden;transition:transform .2s;}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 46px;box-shadow:0 4px 14px rgba(0,0,0,.08);border:2px solid var(--card-bg);overflow:hidden;transition:transform .2s;}
 .avatar img{width:100%;height:100%;object-fit:cover;}
 .hello:hover .avatar{transform:scale(1.04);}
 .hello h1{font-size:17px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:6px;color:var(--ink);}
 .hello p{font-size:11px;color:var(--grey);font-weight:600;display:flex;align-items:center;gap:4px;}
 .status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;}
 .top-actions{display:flex;gap:8px;}
-.circle-btn{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;color:var(--ink);}
+.circle-btn{width:42px;height:42px;border-radius:50%;background:var(--card-bg);display:flex;align-items:center;justify-content:center;border:1px solid var(--grey-line);cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;color:var(--ink);}
 .circle-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
 .circle-btn:active{transform:scale(.92);}
 .circle-btn svg{width:20px;height:20px;}
@@ -127,17 +144,17 @@ svg.icon{
 .eye:hover{background:rgba(255,255,255,.2);}
 .eye svg{width:16px;height:16px;color:#fff;}
 
-/* ---------- Professional Quick Actions Grid ---------- */
+/* ---------- Quick Actions Grid ---------- */
 .quick{display:flex;justify-content:space-between;gap:10px;margin-top:16px;}
-.qa{flex:1;background:#fff;border-radius:var(--radius-sm);padding:14px 6px;text-align:center;cursor:pointer;border:1px solid rgba(0,0,0,.03);box-shadow:var(--shadow-sm);transition:all .2s;}
+.qa{flex:1;background:var(--card-bg);border-radius:var(--radius-sm);padding:14px 6px;text-align:center;cursor:pointer;border:1px solid var(--grey-line);box-shadow:var(--shadow-sm);transition:all .2s;}
 .qa:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
 .qa:active{transform:scale(.94);}
 .qa .ic{width:46px;height:46px;border-radius:16px;background:var(--green-soft);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;}
 .qa .ic svg{width:22px;height:22px;color:var(--green-deep);}
 .qa span{font-size:11px;font-weight:700;color:var(--ink);}
 
-/* ---------- Professional Bar Chart Card ---------- */
-.card{background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);border:1px solid rgba(0,0,0,.03);}
+/* ---------- Bar Chart Card ---------- */
+.card{background:var(--card-bg);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);border:1px solid var(--grey-line);transition:background .3s;}
 .chart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .chart-head .t{font-size:14px;font-weight:800;}
 .legend{display:flex;gap:12px;font-size:11px;color:var(--grey);font-weight:700;}
@@ -150,10 +167,10 @@ svg.icon{
 .bar.hi::after{content:attr(data-v);position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:3px 7px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 10px var(--green-glow);}
 .bar-wrap small{font-size:10px;color:var(--grey);font-weight:700;}
 
-/* ---------- Professional Category Items (SVG Icons) ---------- */
+/* ---------- Category Items (SVG Icons) ---------- */
 .cats{display:flex;gap:10px;overflow-x:auto;padding:2px 0 4px;margin:0 -20px;padding-left:20px;padding-right:20px;}
 .cats::-webkit-scrollbar{display:none;}
-.cat{flex:0 0 auto;background:#fff;border-radius:20px;padding:14px 16px;min-width:128px;box-shadow:var(--shadow-sm);border:1px solid rgba(0,0,0,.03);}
+.cat{flex:0 0 auto;background:var(--card-bg);border-radius:20px;padding:14px 16px;min-width:128px;box-shadow:var(--shadow-sm);border:1px solid var(--grey-line);}
 .cat .ic{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
 .cat .ic svg{width:20px;height:20px;}
 .cat .n{font-size:12px;font-weight:700;color:var(--grey);}
@@ -161,8 +178,15 @@ svg.icon{
 .progress{height:6px;border-radius:6px;background:var(--grey-line);margin-top:10px;overflow:hidden;}
 .progress i{display:block;height:100%;border-radius:6px;background:var(--green);}
 
-/* ---------- Professional Transactions List ---------- */
-.tx{display:flex;align-items:center;gap:14px;padding:14px 4px;border-bottom:1px solid var(--grey-line);transition:background .15s;}
+/* ---------- Search & Filter Controls ---------- */
+.filter-row{display:flex;gap:8px;margin-bottom:14px;}
+.filter-row input, .filter-row select{background:var(--card-bg);border:1px solid var(--grey-line);border-radius:14px;padding:10px 14px;font-size:12px;font-weight:600;color:var(--ink);}
+.filter-row input{flex:1;}
+.filter-row select{flex:0 0 120px;}
+
+/* ---------- Transactions List (Editable on Click) ---------- */
+.tx{display:flex;align-items:center;gap:14px;padding:14px 4px;border-bottom:1px solid var(--grey-line);cursor:pointer;transition:background .15s;}
+.tx:hover{background:var(--green-soft);}
 .tx:last-child{border-bottom:none;}
 .tx .ic{width:46px;height:46px;border-radius:16px;flex:0 0 46px;display:flex;align-items:center;justify-content:center;}
 .tx .ic svg{width:22px;height:22px;}
@@ -173,25 +197,23 @@ svg.icon{
 .tx .amt.neg{color:var(--ink);}
 .tx .amt.pos{color:var(--green-deep);}
 
-/* ---------- Split Bill Screen (Reference Match) ---------- */
+/* ---------- Split Bill Screen ---------- */
 .split-summary{background:var(--dark-gradient);color:#fff;border-radius:var(--radius);padding:24px;margin-top:8px;position:relative;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.2);}
 .split-summary .glow{position:absolute;right:-30px;top:-30px;width:170px;height:170px;background:radial-gradient(circle,var(--green-bright) 0%,transparent 70%);opacity:.4;}
 
-/* Action Row Pills matching Reference (Receipt, Copy, Share, Report, Add) */
 .action-pills-row{display:flex;gap:8px;margin:16px 0;overflow-x:auto;padding-bottom:2px;}
 .action-pills-row::-webkit-scrollbar{display:none;}
-.act-pill{flex:1;min-width:64px;background:#fff;border:1px solid rgba(0,0,0,.04);border-radius:18px;padding:10px 8px;text-align:center;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .15s;}
+.act-pill{flex:1;min-width:64px;background:var(--card-bg);border:1px solid var(--grey-line);border-radius:18px;padding:10px 8px;text-align:center;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .15s;}
 .act-pill:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
 .act-pill:active{transform:scale(.94);}
 .act-pill .icon-box{width:34px;height:34px;border-radius:12px;background:var(--grey-light);margin:0 auto 4px;display:flex;align-items:center;justify-content:center;color:var(--ink);}
 .act-pill .icon-box.highlight{background:var(--green);color:#fff;}
 .act-pill span{font-size:10px;font-weight:700;color:var(--grey);}
 
-/* Friends Grid matching Reference */
 .friends-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:10px 0;}
-.friend-card{background:#fff;border-radius:20px;padding:12px 8px;text-align:center;cursor:pointer;border:2px solid transparent;box-shadow:var(--shadow-sm);transition:all .2s;position:relative;}
+.friend-card{background:var(--card-bg);border-radius:20px;padding:12px 8px;text-align:center;cursor:pointer;border:2px solid transparent;box-shadow:var(--shadow-sm);transition:all .2s;position:relative;}
 .friend-card.sel{border-color:var(--green);background:var(--green-soft);transform:scale(1.02);}
-.friend-card .avatar-box{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;position:relative;overflow:hidden;border:2px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.08);}
+.friend-card .avatar-box{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;position:relative;overflow:hidden;border:2px solid var(--card-bg);box-shadow:0 4px 10px rgba(0,0,0,.08);}
 .friend-card .avatar-box img{width:100%;height:100%;object-fit:cover;}
 .friend-card .chk-badge{position:absolute;right:2px;bottom:2px;width:18px;height:18px;background:var(--green);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;}
 .friend-card.sel .chk-badge{display:flex;}
@@ -199,7 +221,7 @@ svg.icon{
 .friend-card .fn{font-size:11px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 /* ---------- Bills Screen ---------- */
-.bill{display:flex;align-items:center;gap:14px;background:#fff;border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid rgba(0,0,0,.03);}
+.bill{display:flex;align-items:center;gap:14px;background:var(--card-bg);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--grey-line);}
 .bill .ic{width:48px;height:48px;border-radius:16px;flex:0 0 48px;display:flex;align-items:center;justify-content:center;}
 .bill .ic svg{width:22px;height:22px;}
 .bill .info{flex:1;}
@@ -213,7 +235,7 @@ svg.icon{
 .badge.late{background:#fee2e2;color:var(--danger);}
 
 /* ---------- Budget & Goals ---------- */
-.goal{background:#fff;border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid rgba(0,0,0,.03);}
+.goal{background:var(--card-bg);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--grey-line);}
 .goal .head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
 .goal .ic{width:44px;height:44px;border-radius:16px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;}
 .goal .ic svg{width:22px;height:22px;}
@@ -228,8 +250,8 @@ svg.icon{
 .dl-item .dot{width:10px;height:10px;border-radius:50%;flex:0 0 10px;}
 .dl-item .v{margin-left:auto;font-weight:800;}
 
-/* ---------- Dock Bottom Nav matching Reference ---------- */
-.nav{position:absolute;bottom:12px;left:16px;right:16px;height:68px;background:rgba(18,24,21,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:24px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:40;box-shadow:0 20px 40px rgba(0,0,0,.3);}
+/* ---------- Dock Bottom Nav ---------- */
+.nav{position:absolute;bottom:12px;left:16px;right:16px;height:68px;background:rgba(18,24,21,.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:24px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:40;box-shadow:0 20px 40px rgba(0,0,0,.4);}
 .nav button{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#94a3b8;width:44px;height:44px;border-radius:14px;position:relative;transition:all .2s;}
 .nav button svg{width:22px;height:22px;color:currentColor;}
 .nav button.on{color:#fff;background:rgba(255,255,255,.12);}
@@ -238,35 +260,36 @@ svg.icon{
 .nav .fab:active{transform:scale(.94);}
 .nav .fab svg{width:24px;height:24px;color:#fff;stroke-width:2.2px;}
 
-/* ---------- Add sheet ---------- */
-.sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:70;display:none;align-items:flex-end;animation:fade .25s;}
+/* ---------- Add & Edit sheet ---------- */
+.sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:70;display:none;align-items:flex-end;animation:fade .25s;}
 .sheet-back.open{display:flex;}
 .sheet{background:var(--bg);width:100%;border-radius:32px 32px 0 0;padding:10px 22px 30px;max-height:88%;overflow-y:auto;animation:up .35s cubic-bezier(.16,1,.3,1);}
 .sheet::-webkit-scrollbar{display:none;}
 @keyframes up{from{transform:translateY(100%);}to{transform:none;}}
-.grab{width:44px;height:5px;border-radius:5px;background:#cfcfcf;margin:6px auto 18px;}
+.grab{width:44px;height:5px;border-radius:5px;background:var(--grey);margin:6px auto 18px;opacity:.4;}
 .sheet h2{font-size:20px;font-weight:800;margin-bottom:4px;}
 .amount-input{background:var(--card-dark);border-radius:var(--radius);padding:22px;text-align:center;color:#fff;margin:16px 0;box-shadow:0 12px 30px rgba(0,0,0,.15);}
 .amount-input .lbl{font-size:12px;color:#94a3b8;font-weight:600;}
 .amount-input .big{font-size:44px;font-weight:800;letter-spacing:-1px;margin-top:4px;}
 .amount-input .big .cur{color:#64748b;font-size:28px;}
 .type-toggle{display:flex;gap:10px;margin-bottom:14px;}
-.type-toggle button{flex:1;border:none;padding:12px;border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;background:#fff;color:var(--grey);transition:all .2s;}
+.type-toggle button{flex:1;border:none;padding:12px;border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;background:var(--card-bg);color:var(--grey);transition:all .2s;}
 .type-toggle button.on-exp{background:var(--card-dark);color:#fff;}
 .type-toggle button.on-inc{background:var(--green);color:#fff;}
 .field-label{font-size:12px;font-weight:700;color:var(--grey);margin:14px 2px 8px;}
 .cat-pick{display:flex;flex-wrap:wrap;gap:8px;}
-.cat-pick button{border:none;background:#fff;padding:10px 14px;border-radius:14px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
+.cat-pick button{border:none;background:var(--card-bg);padding:10px 14px;border-radius:14px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--ink);transition:all .15s;border:1px solid var(--grey-line);}
 .cat-pick button.on{background:var(--green-soft);color:var(--green-deep);box-shadow:0 0 0 2px var(--green);}
 .cat-pick button svg{width:16px;height:16px;}
-.txt-field{width:100%;background:#fff;border:1px solid #e0e0e0;border-radius:14px;padding:14px 16px;font-size:14px;font-weight:600;margin-top:4px;transition:border-color .2s;}
+.txt-field{width:100%;background:var(--card-bg);border:1px solid var(--grey-line);border-radius:14px;padding:14px 16px;font-size:14px;font-weight:600;margin-top:4px;color:var(--ink);transition:border-color .2s;}
 .txt-field:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow);}
 .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
-.keypad button{background:#fff;border:none;border-radius:16px;padding:16px;font-size:22px;font-weight:700;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .15s;}
+.keypad button{background:var(--card-bg);border:1px solid var(--grey-line);border-radius:16px;padding:16px;font-size:22px;font-weight:700;cursor:pointer;box-shadow:var(--shadow-sm);color:var(--ink);transition:all .15s;}
 .keypad button:active{background:var(--green-soft);transform:scale(.96);}
 .save-btn{width:100%;background:var(--green-gradient);color:#fff;border:none;border-radius:20px;padding:18px;font-size:15px;font-weight:800;margin-top:20px;cursor:pointer;box-shadow:0 10px 25px var(--green-glow);transition:all .2s;}
 .save-btn:hover{transform:translateY(-1px);box-shadow:0 12px 30px var(--green-glow);}
 .save-btn:active{transform:scale(.98);}
+.btn-danger{background:#ef4444 !important;box-shadow:0 8px 20px rgba(239,68,68,.3) !important;}
 
 .toast{position:absolute;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card-dark);color:#fff;padding:14px 22px;border-radius:20px;font-size:13px;font-weight:700;z-index:120;opacity:0;transition:.3s;display:flex;align-items:center;gap:10px;box-shadow:0 12px 35px rgba(0,0,0,.35);pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -274,38 +297,37 @@ svg.icon{
 .toast .dot svg{width:12px;height:12px;color:#fff;stroke-width:2.5;}
 
 /* ---------- Profile Drawer & Modals ---------- */
-.drawer-back{position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:90;display:none;animation:fade .25s;}
+.drawer-back{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:90;display:none;animation:fade .25s;}
 .drawer-back.open{display:block;}
 .drawer{position:absolute;top:0;left:0;bottom:0;width:84%;max-width:320px;background:var(--bg);z-index:91;padding:24px 18px 30px;overflow-y:auto;box-shadow:10px 0 30px rgba(0,0,0,.25);display:flex;flex-direction:column;animation:slideRight .35s cubic-bezier(.16,1,.3,1);}
 .drawer::-webkit-scrollbar{display:none;}
 @keyframes slideRight{from{transform:translateX(-100%);}to{transform:none;}}
 
-.drawer-header{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 0 18px;border-bottom:1px solid #e2e4e3;}
-.drawer-avatar{width:76px;height:76px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 8px 24px rgba(0,0,0,.12);border:3px solid #fff;margin-bottom:12px;overflow:hidden;}
+.drawer-header{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 0 18px;border-bottom:1px solid var(--grey-line);}
+.drawer-avatar{width:76px;height:76px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 8px 24px rgba(0,0,0,.12);border:3px solid var(--card-bg);margin-bottom:12px;overflow:hidden;}
 .drawer-avatar img{width:100%;height:100%;object-fit:cover;}
 .drawer-name{font-size:20px;font-weight:800;letter-spacing:-.4px;color:var(--ink);}
 .drawer-email{font-size:12px;color:var(--grey);font-weight:600;margin-top:2px;}
 .drawer-badge{font-size:10px;font-weight:800;background:var(--green-soft);color:var(--green-deep);padding:3px 10px;border-radius:12px;margin-top:8px;}
 
 .drawer-stats{display:flex;gap:10px;margin:16px 0;}
-.d-stat{flex:1;background:#fff;border-radius:18px;padding:12px 10px;text-align:center;box-shadow:var(--shadow-sm);}
+.d-stat{flex:1;background:var(--card-bg);border-radius:18px;padding:12px 10px;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--grey-line);}
 .d-stat .v{font-size:16px;font-weight:800;color:var(--ink);}
 .d-stat .lbl{font-size:10px;color:var(--grey);font-weight:700;margin-top:2px;}
 
 .drawer-sec-title{font-size:11px;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;margin:16px 4px 8px;}
 .drawer-menu{display:flex;flex-direction:column;gap:8px;}
-.d-menu-btn{display:flex;align-items:center;gap:12px;background:#fff;border:none;border-radius:16px;padding:13px 14px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;box-shadow:var(--shadow-sm);transition:all .15s;}
-.d-menu-btn:hover{background:#fafafa;}
-.d-menu-btn:active{transform:scale(.98);background:#f0f2f1;}
+.d-menu-btn{display:flex;align-items:center;gap:12px;background:var(--card-bg);border:1px solid var(--grey-line);border-radius:16px;padding:13px 14px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;box-shadow:var(--shadow-sm);transition:all .15s;}
+.d-menu-btn:hover{background:var(--grey-soft);}
+.d-menu-btn:active{transform:scale(.98);}
 .d-menu-btn .ic-box{width:32px;height:32px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:16px;}
 .d-menu-btn .ic-box svg{width:18px;height:18px;color:var(--ink);}
 .d-menu-btn.danger{color:var(--danger);}
 .d-menu-btn.danger .ic-box{background:#fee2e2;color:var(--danger);}
-.d-menu-btn.danger .ic-box svg{color:var(--danger);}
 
 /* User Picker List in Drawer */
 .user-list{display:flex;flex-direction:column;gap:8px;margin-top:6px;}
-.user-item{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:10px 12px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.user-item{display:flex;align-items:center;gap:10px;background:var(--card-bg);border-radius:16px;padding:10px 12px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
 .user-item.active{border-color:var(--green);background:var(--green-soft);}
 .user-item .u-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex:0 0 36px;}
 .user-item .u-av img{width:100%;height:100%;object-fit:cover;}
@@ -315,20 +337,19 @@ svg.icon{
 /* Registration / Edit Modal Overlay */
 .reg-overlay{position:absolute;inset:0;background:rgba(11,15,13,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:110;display:none;align-items:center;justify-content:center;padding:20px;animation:fade .3s;}
 .reg-overlay.open{display:flex;}
-.reg-card{background:#fff;border-radius:32px;padding:26px 20px;width:100%;max-width:350px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.35);text-align:center;}
+.reg-card{background:var(--card-bg);border-radius:32px;padding:26px 20px;width:100%;max-width:350px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.35);text-align:center;border:1px solid var(--grey-line);}
 .reg-card::-webkit-scrollbar{display:none;}
 .reg-icon{width:64px;height:64px;border-radius:22px;background:var(--green-soft);color:var(--green-deep);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 20px var(--green-glow);}
 .reg-icon svg{width:32px;height:32px;color:var(--green-deep);}
 .reg-card h2{font-size:22px;font-weight:800;letter-spacing:-.5px;}
 .reg-card p{font-size:13px;color:var(--grey);font-weight:600;margin:6px 0 16px;}
 
-/* Photo Upload UI inside Modals */
 .avatar-preview-box{display:flex;flex-direction:column;align-items:center;margin:12px 0 16px;}
-.avatar-preview{width:80px;height:80px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 6px 20px rgba(0,0,0,.1);border:3px solid #fff;overflow:hidden;position:relative;}
+.avatar-preview{width:80px;height:80px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 6px 20px rgba(0,0,0,.1);border:3px solid var(--card-bg);overflow:hidden;position:relative;}
 .avatar-preview img{width:100%;height:100%;object-fit:cover;}
 .photo-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:10px;}
 .photo-btn{background:var(--grey-light);border:1px solid var(--grey-line);border-radius:12px;padding:8px 12px;font-size:11px;font-weight:700;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;}
-.photo-btn:hover{background:#e2e7e5;border-color:var(--green);}
+.photo-btn:hover{background:var(--green-soft);border-color:var(--green);}
 .photo-btn:active{transform:scale(.96);}
 .photo-btn svg{width:14px;height:14px;color:var(--ink);}
 
@@ -361,6 +382,9 @@ svg.icon{
           </div>
         </div>
         <div class="top-actions">
+          <button class="circle-btn" onclick="toggleThemeMode()" title="Cambia Tema Chiaro/Scuro">
+            <svg class="icon" viewBox="0 0 24 24" id="theme-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
           <button class="circle-btn" onclick="openProfileDrawer()" title="Menu Profilo">
             <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
           </button>
@@ -420,7 +444,19 @@ svg.icon{
       <div class="section-title">Spese per Categoria <span class="more" onclick="go('budget',4)">Vedi tutte</span></div>
       <div class="cats" id="cats"></div>
 
-      <div class="section-title">Transazioni Recenti</div>
+      <!-- Search & Filter Controls -->
+      <div class="section-title">
+        <span>Transazioni Recenti</span>
+        <span class="more" onclick="exportCSV()">📁 Export CSV</span>
+      </div>
+      <div class="filter-row">
+        <input type="text" id="tx-search" placeholder="🔍 Cerca transazione..." oninput="renderTx()">
+        <select id="tx-month-filter" onchange="renderTx()">
+          <option value="all">Tutti i mesi</option>
+          <option value="current" selected>Questo mese</option>
+        </select>
+      </div>
+
       <div class="card" id="tx-list"></div>
     </div>
 
@@ -443,9 +479,9 @@ svg.icon{
 
       <!-- Action Pills Row Matching Reference (Receipt, Copy, Share, Report, Add) -->
       <div class="action-pills-row">
-        <div class="act-pill" onclick="toast('Ricevuta generata')">
+        <div class="act-pill" onclick="exportPDF()">
           <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16l3-2 3 2 3-2 3 2 3-2V4a2 2 0 0 0-2-2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/></svg></div>
-          <span>Ricevuta</span>
+          <span>Ricevuta PDF</span>
         </div>
         <div class="act-pill" onclick="toast('Link copiato negli appunti!')">
           <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
@@ -455,9 +491,9 @@ svg.icon{
           <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
           <span>Condividi</span>
         </div>
-        <div class="act-pill" onclick="toast('Report PDF generato')">
+        <div class="act-pill" onclick="exportCSV()">
           <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
-          <span>Report</span>
+          <span>Export CSV</span>
         </div>
         <div class="act-pill" onclick="openAdd('expense')">
           <div class="icon-box highlight"><svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
@@ -515,7 +551,7 @@ svg.icon{
       <div class="section-title">Obiettivi di Risparmio</div>
       <div id="goals"></div>
 
-      <button onclick="resetActiveUser()" style="width:100%;background:#fff;color:var(--danger);border:none;border-radius:20px;padding:16px;font-size:13px;font-weight:800;margin-top:16px;cursor:pointer;box-shadow:var(--shadow-sm);">Azzera i dati del mio profilo</button>
+      <button onclick="resetActiveUser()" style="width:100%;background:var(--card-bg);color:var(--danger);border:1px solid var(--grey-line);border-radius:20px;padding:16px;font-size:13px;font-weight:800;margin-top:16px;cursor:pointer;box-shadow:var(--shadow-sm);">Azzera i dati del mio profilo</button>
     </div>
   </div>
 
@@ -561,6 +597,28 @@ svg.icon{
     </div>
   </div>
 
+  <!-- ============ Edit Transaction Sheet (CRUD) ============ -->
+  <div class="sheet-back" id="edit-tx-sheet">
+    <div class="sheet">
+      <div class="grab"></div>
+      <h2>Modifica Transazione</h2>
+      <div class="field-label">Descrizione</div>
+      <input class="txt-field" id="edit-tx-desc">
+      <div class="field-label">Importo (€)</div>
+      <input type="number" step="0.01" class="txt-field" id="edit-tx-amt">
+      <div class="field-label">Categoria</div>
+      <select class="txt-field" id="edit-tx-cat"></select>
+      <div class="field-label">Data</div>
+      <input type="date" class="txt-field" id="edit-tx-date">
+      
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="save-btn btn-danger" style="margin-top:0;" onclick="deleteCurrentTx()">🗑️ Elimina</button>
+        <button class="save-btn" style="margin-top:0;" onclick="saveEditedTx()">Salva Modifiche</button>
+      </div>
+      <button class="save-btn" style="background:var(--grey);margin-top:10px;padding:12px;" onclick="closeEditTxSheet()">Annulla</button>
+    </div>
+  </div>
+
   <!-- ============ Profile Side Drawer ============ -->
   <div class="drawer-back" id="drawer-back" onclick="if(event.target.id==='drawer-back') closeProfileDrawer()">
     <div class="drawer">
@@ -582,44 +640,55 @@ svg.icon{
         </div>
       </div>
 
-      <div class="drawer-sec-title">Gestione Profilo</div>
+      <div class="drawer-sec-title">Personalizzazione Temi</div>
       <div class="drawer-menu">
-        <button class="d-menu-btn" onclick="openEditProfile()">
-          <div class="ic-box">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          </div> 
-          Modifica Profilo
+        <button class="d-menu-btn" onclick="toggleThemeMode()">
+          <div class="ic-box">🌗</div> Tema <span id="theme-mode-lbl" style="margin-left:auto;font-size:11px;color:var(--grey);">Scuro</span>
+        </button>
+        <div style="background:var(--card-bg);border:1px solid var(--grey-line);border-radius:16px;padding:12px;margin-top:4px;">
+          <div style="font-size:11px;font-weight:700;color:var(--grey);margin-bottom:8px;">Colore Accent</div>
+          <div class="color-pick" style="margin-bottom:0;" id="accent-picker-drawer"></div>
+        </div>
+      </div>
+
+      <div class="drawer-sec-title">Notifiche & Automazioni</div>
+      <div class="drawer-menu">
+        <button class="d-menu-btn" onclick="requestNotificationPermission()">
+          <div class="ic-box">🔔</div> Attiva Notifiche Scadenze
+        </button>
+        <div style="background:var(--card-bg);border:1px solid var(--grey-line);border-radius:16px;padding:12px;font-size:11px;line-height:1.4;color:var(--grey);">
+          <strong style="color:var(--ink);">⚡ Apple Pay Auto-Log (Comandi Rapidi):</strong><br>
+          Invia spese in automatico chiamando l'URL:<br>
+          <code style="font-size:10px;color:var(--green);display:block;margin-top:4px;word-break:break-all;">trackly.app/?amt=15.50&desc=Caffe&cat=Ristoranti</code>
+        </div>
+      </div>
+
+      <div class="drawer-sec-title">Esportazione & Backup</div>
+      <div class="drawer-menu">
+        <button class="d-menu-btn" onclick="exportPDF()">
+          <div class="ic-box">📄</div> Genera Report PDF
+        </button>
+        <button class="d-menu-btn" onclick="exportCSV()">
+          <div class="ic-box">📊</div> Esporta Transazioni CSV
         </button>
         <button class="d-menu-btn" onclick="exportUserData()">
-          <div class="ic-box">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          </div> 
-          Esporta Dati (JSON)
+          <div class="ic-box">📥</div> Esporta Backup JSON
         </button>
         <button class="d-menu-btn" onclick="triggerImportData()">
-          <div class="ic-box">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          </div> 
-          Importa Dati Backup
+          <div class="ic-box">📤</div> Importa Backup JSON
         </button>
       </div>
 
       <div class="drawer-sec-title">Account Salvati</div>
       <div class="user-list" id="user-switch-list"></div>
       <button class="d-menu-btn" style="margin-top:8px;" onclick="openRegistrationModal(true)">
-        <div class="ic-box">
-          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div> 
-        Aggiungi Nuovo Utente
+        <div class="ic-box">➕</div> Aggiungi Nuovo Utente
       </button>
 
       <div class="drawer-sec-title">Zona Pericolo</div>
       <div class="drawer-menu">
         <button class="d-menu-btn danger" onclick="resetActiveUser()">
-          <div class="ic-box">
-            <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-          </div> 
-          Azzera Dati Profilo
+          <div class="ic-box">🗑️</div> Azzera Dati Profilo
         </button>
       </div>
 
@@ -660,9 +729,6 @@ svg.icon{
       <div style="text-align:left;" class="field-label">Email (Opzionale)</div>
       <input type="email" id="reg-email" class="txt-field" placeholder="Es. lorenzo@email.it">
 
-      <div style="text-align:left;" class="field-label">Colore Profilo</div>
-      <div class="color-pick" id="reg-color-pick"></div>
-
       <button class="save-btn" onclick="submitRegistration()">Registrati & Inizia 🚀</button>
     </div>
   </div>
@@ -700,9 +766,6 @@ svg.icon{
       <div style="text-align:left;" class="field-label">Email</div>
       <input type="email" id="edit-email" class="txt-field">
 
-      <div style="text-align:left;" class="field-label">Colore Profilo</div>
-      <div class="color-pick" id="edit-color-pick"></div>
-
       <div style="display:flex;gap:10px;margin-top:16px;">
         <button class="save-btn" style="background:var(--grey);margin-top:0;" onclick="closeEditProfile()">Annulla</button>
         <button class="save-btn" style="margin-top:0;" onclick="saveProfileChanges()">Salva</button>
@@ -730,11 +793,16 @@ svg.icon{
 const eur = n => '€' + n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
 const eurShort = n => '€' + Math.round(n).toLocaleString('it-IT');
 
-const colors = ['#22c55e', '#3b82f6', '#8b5cf6', '#ec4899', '#f97316'];
+const accentColors = [
+  { name: 'Verde Smeraldo', hex: '#22c55e', deep: '#059669' },
+  { name: 'Blu Neon', hex: '#3b82f6', deep: '#1d4ed8' },
+  { name: 'Viola Cyber', hex: '#8b5cf6', deep: '#6d28d9' },
+  { name: 'Arancio Sunset', hex: '#f97316', deep: '#c2410c' }
+];
 
-/* Professional Category Definitions with Vector Icons & Soft Palette */
+/* Professional Category Definitions with Vector Icons */
 const categoryIconsSVG = {
-  'Spesa': `<svg class="icon" viewBox="0 0 24 24" style="color:#059669"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+  'Spesa': `<svg class="icon" viewBox="0 0 24 24" style="color:var(--green)"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
   'Trasporti': `<svg class="icon" viewBox="0 0 24 24" style="color:#2563eb"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 17v2M17 17v2M7 11h10M7 7h10"/></svg>`,
   'Ristoranti': `<svg class="icon" viewBox="0 0 24 24" style="color:#d97706"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
   'Shopping': `<svg class="icon" viewBox="0 0 24 24" style="color:#7c3aed"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
@@ -745,17 +813,16 @@ const categoryIconsSVG = {
 };
 
 const defaultCategories = [
-  {n:'Spesa',icSVG:categoryIconsSVG['Spesa'],bg:'#d1fae5',v:0,budget:400},
-  {n:'Trasporti',icSVG:categoryIconsSVG['Trasporti'],bg:'#dbeafe',v:0,budget:200},
-  {n:'Ristoranti',icSVG:categoryIconsSVG['Ristoranti'],bg:'#fef3c7',v:0,budget:250},
-  {n:'Shopping',icSVG:categoryIconsSVG['Shopping'],bg:'#ede9fe',v:0,budget:200},
-  {n:'Casa',icSVG:categoryIconsSVG['Casa'],bg:'#fee2e2',v:0,budget:600},
-  {n:'Abbonamenti',icSVG:categoryIconsSVG['Abbonamenti'],bg:'#ffe4e6',v:0,budget:50},
-  {n:'Salute',icSVG:categoryIconsSVG['Salute'],bg:'#ccfbf1',v:0,budget:150},
-  {n:'Altro',icSVG:categoryIconsSVG['Altro'],bg:'#f1f5f9',v:0,budget:100}
+  {n:'Spesa',icSVG:categoryIconsSVG['Spesa'],bg:'rgba(34, 197, 94, 0.15)',v:0,budget:400},
+  {n:'Trasporti',icSVG:categoryIconsSVG['Trasporti'],bg:'rgba(37, 99, 235, 0.15)',v:0,budget:200},
+  {n:'Ristoranti',icSVG:categoryIconsSVG['Ristoranti'],bg:'rgba(217, 119, 6, 0.15)',v:0,budget:250},
+  {n:'Shopping',icSVG:categoryIconsSVG['Shopping'],bg:'rgba(124, 58, 237, 0.15)',v:0,budget:200},
+  {n:'Casa',icSVG:categoryIconsSVG['Casa'],bg:'rgba(220, 38, 38, 0.15)',v:0,budget:600},
+  {n:'Abbonamenti',icSVG:categoryIconsSVG['Abbonamenti'],bg:'rgba(225, 29, 72, 0.15)',v:0,budget:50},
+  {n:'Salute',icSVG:categoryIconsSVG['Salute'],bg:'rgba(13, 148, 136, 0.15)',v:0,budget:150},
+  {n:'Altro',icSVG:categoryIconsSVG['Altro'],bg:'rgba(71, 85, 105, 0.15)',v:0,budget:100}
 ];
 
-/* Demo High Quality Unsplash Avatars for Friends List (Matching Reference Design) */
 const defaultDemoFriends = [
   {n:'Joey J.', img:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80', sel:true},
   {n:'Amy A.', img:'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80', sel:true},
@@ -814,14 +881,24 @@ let selectedRegPhoto = null;
 let selectedEditColor = '#22c55e';
 let selectedEditPhoto = null;
 
+let editingTxIndex = -1;
+
 let state = {
   balance: 0,
   balanceHidden: false,
+  themeMode: 'dark',
+  accentColor: '#22c55e',
+  notificationsEnabled: false,
   transactions: [],
   bars: [[20,35],[40,60],[30,45],[55,75],[60,85],[70,90]],
   categories: JSON.parse(JSON.stringify(defaultCategories)),
-  billsDue: [],
-  billsPaid: [],
+  billsDue: [
+    {n:'Fibra Ottica Casa', d:'Scade tra 2 giorni', a:29.90, badge:'soon', bt:'In arrivo', bg:'rgba(37,99,235,0.15)', icSVG:categoryIconsSVG['Abbonamenti']},
+    {n:'Bolletta Luce', d:'Scade il 28 Luglio', a:84.50, badge:'soon', bt:'In arrivo', bg:'rgba(217,119,6,0.15)', icSVG:categoryIconsSVG['Casa']}
+  ],
+  billsPaid: [
+    {n:'Abbonamento Palestra', d:'Pagata il 5 Luglio', a:45.00, badge:'paid', bt:'Pagata', bg:'rgba(34,197,94,0.15)', icSVG:categoryIconsSVG['Salute']}
+  ],
   friends: JSON.parse(JSON.stringify(defaultDemoFriends)),
   splitList: [],
   goals: []
@@ -834,7 +911,7 @@ function initUserProfiles(){
     if(rawUsers){ users = JSON.parse(rawUsers); }
   } catch(e){ users = []; }
 
-  // Migration from legacy state if present
+  // Migration from legacy state
   const legacyRaw = localStorage.getItem('moneysaver_v1');
   if(!users.length && legacyRaw){
     try {
@@ -864,6 +941,7 @@ function initUserProfiles(){
   }
 
   loadActiveUser();
+  handleURLAutoLog();
 }
 
 function loadActiveUser(){
@@ -873,21 +951,20 @@ function loadActiveUser(){
     return;
   }
   state = Object.assign({
-    balance: 0, balanceHidden: false, transactions: [],
+    balance: 0, balanceHidden: false, themeMode: 'dark', accentColor: '#22c55e',
+    notificationsEnabled: false, transactions: [],
     bars: [[20,35],[40,60],[30,45],[55,75],[60,85],[70,90]],
     categories: JSON.parse(JSON.stringify(defaultCategories)),
     billsDue: [], billsPaid: [], friends: JSON.parse(JSON.stringify(defaultDemoFriends)), splitList: [], goals: []
   }, user.state || {});
 
-  // Ensure category icons have SVG rendering
-  if(state.categories){
-    state.categories.forEach(c => {
-      if(!c.icSVG && categoryIconsSVG[c.n]) c.icSVG = categoryIconsSVG[c.n];
-    });
-  }
+  // Apply theme & accent
+  applyTheme(state.themeMode || 'dark');
+  setAccentColor(state.accentColor || '#22c55e', false);
 
   updateHeaderUI(user);
   renderAll();
+  checkBudgetNotifications();
 }
 
 function saveActiveUser(){
@@ -912,35 +989,293 @@ function updateHeaderUI(user){
   avEl.style.background = user.photo ? 'transparent' : (user.color || '#22c55e');
 }
 
-/* ---------------- Photo Input Triggers & Handlers ---------------- */
-function triggerCameraInput(prefix){
-  document.getElementById(prefix + '-camera-input').click();
+/* ---------------- Theme & Accent System ---------------- */
+function toggleThemeMode(){
+  const newMode = (state.themeMode === 'light') ? 'dark' : 'light';
+  state.themeMode = newMode;
+  applyTheme(newMode);
+  saveActiveUser();
+  toast(newMode === 'light' ? 'Tema Chiaro attivato ☀️' : 'Tema Scuro attivato 🌙');
 }
 
-function triggerGalleryInput(prefix){
-  document.getElementById(prefix + '-gallery-input').click();
+function applyTheme(mode){
+  document.documentElement.setAttribute('data-theme', mode);
+  const icon = document.getElementById('theme-icon');
+  const lbl = document.getElementById('theme-mode-lbl');
+  if(lbl) lbl.textContent = mode === 'light' ? 'Chiaro ☀️' : 'Scuro 🌙';
+  if(icon){
+    if(mode === 'light'){
+      icon.innerHTML = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+    } else {
+      icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+    }
+  }
 }
+
+function setAccentColor(hexColor, shouldSave = true){
+  const found = accentColors.find(c => c.hex === hexColor) || accentColors[0];
+  state.accentColor = found.hex;
+  document.documentElement.style.setProperty('--green', found.hex);
+  document.documentElement.style.setProperty('--green-deep', found.deep);
+  document.documentElement.style.setProperty('--green-glow', found.hex + '55');
+  renderAccentPickers();
+  if(shouldSave) saveActiveUser();
+}
+
+function renderAccentPickers(){
+  const container = document.getElementById('accent-picker-drawer');
+  if(!container) return;
+  container.innerHTML = accentColors.map(c => `
+    <div class="color-dot ${c.hex === state.accentColor ? 'sel' : ''}" style="background:${c.hex}" title="${c.name}" onclick="setAccentColor('${c.hex}')"></div>
+  `).join('');
+}
+
+/* ---------------- Feature 2: URL Auto-Log for Apple Pay ---------------- */
+function handleURLAutoLog(){
+  const params = new URLSearchParams(window.location.search);
+  const amtStr = params.get('amount') || params.get('amt');
+  if(!amtStr) return;
+  const val = parseFloat(amtStr.replace(',','.'));
+  if(val > 0){
+    const desc = params.get('desc') || params.get('description') || 'Apple Pay Spesa';
+    const catName = params.get('cat') || params.get('category') || 'Altro';
+    const isIncome = params.get('type') === 'income';
+
+    const bgMap={'Spesa':'rgba(34, 197, 94, 0.15)','Trasporti':'rgba(37, 99, 235, 0.15)','Ristoranti':'rgba(217, 119, 6, 0.15)','Shopping':'rgba(124, 58, 237, 0.15)','Casa':'rgba(220, 38, 38, 0.15)','Abbonamenti':'rgba(225, 29, 72, 0.15)','Salute':'rgba(13, 148, 136, 0.15)','Altro':'rgba(71, 85, 105, 0.15)'};
+
+    const d = new Date();
+    const dateStr = d.toISOString().split('T')[0];
+
+    state.transactions.unshift({
+      n: desc, c: isIncome ? 'Entrata' : catName,
+      bg: bgMap[catName] || 'rgba(71, 85, 105, 0.15)',
+      amt: isIncome ? val : -val, pos: isIncome, date: dateStr
+    });
+    state.balance += isIncome ? val : -val;
+
+    if(!isIncome){
+      const c = state.categories.find(x => x.n === catName);
+      if(c) c.v = (c.v||0) + val;
+    }
+
+    renderAll();
+    saveActiveUser();
+    window.history.replaceState({}, document.title, window.location.pathname);
+    toast('⚡ Apple Pay: ' + (isIncome ? '+' : '−') + eur(val) + ' registrato!');
+  }
+}
+
+/* ---------------- Feature 3: Notifications & Alert System ---------------- */
+function requestNotificationPermission(){
+  if(!('Notification' in window)){
+    toast('Notifiche non supportate su questo browser');
+    return;
+  }
+  Notification.requestPermission().then(permission => {
+    if(permission === 'granted'){
+      state.notificationsEnabled = true;
+      saveActiveUser();
+      toast('Notifiche attivate! 🔔');
+      checkBudgetNotifications();
+    } else {
+      toast('Permesso notifiche negato');
+    }
+  });
+}
+
+function checkBudgetNotifications(){
+  if(!state.notificationsEnabled || Notification.permission !== 'granted') return;
+  
+  state.categories.forEach(c => {
+    if(c.budget > 0 && c.v >= c.budget * 0.85){
+      new Notification('⚠️ Trackly: Budget quasi superato!', {
+        body: `Hai speso il ${Math.round((c.v/c.budget)*100)}% del budget per ${c.n} (${eur(c.v)} / ${eur(c.budget)}).`,
+        icon: 'icon-192.png'
+      });
+    }
+  });
+}
+
+/* ---------------- Feature 4: PDF & CSV Reports ---------------- */
+function exportCSV(){
+  if(!state.transactions || !state.transactions.length){
+    toast('Nessuna transazione da esportare');
+    return;
+  }
+  let csvContent = "data:text/csv;charset=utf-8,Data,Descrizione,Categoria,Tipo,Importo (€)\n";
+  state.transactions.forEach(t => {
+    const d = t.date || new Date().toISOString().split('T')[0];
+    const typeStr = t.pos ? 'Entrata' : 'Spesa';
+    csvContent += `"${d}","${t.n.replace(/"/g, '""')}","${t.c}","${typeStr}","${t.amt.toFixed(2)}"\n`;
+  });
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `trackly-transazioni-${new Date().toISOString().split('T')[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  toast('File CSV esportato!');
+}
+
+function exportPDF(){
+  const user = users.find(u=>u.id===activeUserId) || {name:'Lorenzo'};
+  const totalInc = state.transactions ? state.transactions.filter(t=>t.pos).reduce((a,b)=>a+Math.abs(b.amt),0) : 0;
+  const totalExp = state.transactions ? state.transactions.filter(t=>!t.pos).reduce((a,b)=>a+Math.abs(b.amt),0) : 0;
+
+  const printWin = window.open('', '_blank');
+  printWin.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Trackly — Report Finanziario (${user.name})</title>
+      <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 30px; color: #111; }
+        h1 { font-size: 24px; color: #059669; }
+        .hero { background: #111827; color: #fff; padding: 20px; border-radius: 16px; margin: 20px 0; }
+        .row { display: flex; gap: 20px; }
+        .card { flex: 1; background: #f3f4f6; padding: 15px; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #e5e7eb; font-size: 13px; }
+        th { background: #f9fafb; }
+      </style>
+    </head>
+    <body>
+      <h1>Trackly — Report Finanziario</h1>
+      <p>Utente: <strong>${user.name}</strong> | Data: <strong>${new Date().toLocaleDateString('it-IT')}</strong></p>
+      
+      <div class="hero">
+        <div>Saldo Totale</div>
+        <div style="font-size:32px;font-weight:800;">${eur(state.balance)}</div>
+      </div>
+
+      <div class="row">
+        <div class="card"><strong>Totale Entrate:</strong> ${eur(totalInc)}</div>
+        <div class="card"><strong>Totale Uscite:</strong> ${eur(totalExp)}</div>
+      </div>
+
+      <h3>Storico Transazioni</h3>
+      <table>
+        <thead>
+          <tr><th>Data</th><th>Descrizione</th><th>Categoria</th><th>Importo</th></tr>
+        </thead>
+        <tbody>
+          ${(state.transactions||[]).map(t => `
+            <tr>
+              <td>${t.date || '-'}</td>
+              <td>${t.n}</td>
+              <td>${t.c}</td>
+              <td style="color:${t.pos?'#059669':'#111'};font-weight:bold;">${t.pos?'+':''}${eur(t.amt)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </body>
+    </html>
+  `);
+  printWin.document.close();
+  printWin.focus();
+  setTimeout(() => { printWin.print(); }, 500);
+}
+
+/* ---------------- Feature 1: CRUD Edit & Delete Tx ---------------- */
+function openEditTxSheet(idx){
+  const t = state.transactions[idx];
+  if(!t) return;
+  editingTxIndex = idx;
+  document.getElementById('edit-tx-desc').value = t.n;
+  document.getElementById('edit-tx-amt').value = Math.abs(t.amt);
+  document.getElementById('edit-tx-date').value = t.date || new Date().toISOString().split('T')[0];
+
+  const catSelect = document.getElementById('edit-tx-cat');
+  catSelect.innerHTML = defaultCategories.map(c => `
+    <option value="${c.n}" ${c.n === t.c ? 'selected' : ''}>${c.n}</option>
+  `).join('');
+
+  document.getElementById('edit-tx-sheet').classList.add('open');
+}
+
+function closeEditTxSheet(){
+  document.getElementById('edit-tx-sheet').classList.remove('open');
+  editingTxIndex = -1;
+}
+
+function saveEditedTx(){
+  if(editingTxIndex < 0) return;
+  const t = state.transactions[editingTxIndex];
+  const oldAmt = t.amt;
+  const oldCat = t.c;
+
+  const newDesc = document.getElementById('edit-tx-desc').value.trim() || t.n;
+  const newAmtVal = parseFloat(document.getElementById('edit-tx-amt').value) || 0;
+  const newCat = document.getElementById('edit-tx-cat').value;
+  const newDate = document.getElementById('edit-tx-date').value;
+
+  if(newAmtVal <= 0){ toast('Inserisci un importo valido'); return; }
+
+  // Adjust old category spent value
+  if(!t.pos){
+    const cOld = state.categories.find(x=>x.n===oldCat);
+    if(cOld) cOld.v = Math.max(0, (cOld.v||0) - Math.abs(oldAmt));
+  }
+
+  // Set new values
+  t.n = newDesc;
+  t.c = newCat;
+  t.date = newDate;
+  t.amt = t.pos ? newAmtVal : -newAmtVal;
+
+  // Adjust new category spent value
+  if(!t.pos){
+    const cNew = state.categories.find(x=>x.n===newCat);
+    if(cNew) cNew.v = (cNew.v||0) + newAmtVal;
+  }
+
+  // Adjust balance difference
+  const diff = t.amt - oldAmt;
+  state.balance += diff;
+
+  renderAll();
+  saveActiveUser();
+  closeEditTxSheet();
+  toast('Transazione modificata!');
+}
+
+function deleteCurrentTx(){
+  if(editingTxIndex < 0) return;
+  if(confirm('Eliminare definitivamente questa transazione?')){
+    const t = state.transactions[editingTxIndex];
+    state.balance -= t.amt;
+
+    if(!t.pos){
+      const c = state.categories.find(x=>x.n===t.c);
+      if(c) c.v = Math.max(0, (c.v||0) - Math.abs(t.amt));
+    }
+
+    state.transactions.splice(editingTxIndex, 1);
+    renderAll();
+    saveActiveUser();
+    closeEditTxSheet();
+    toast('Transazione eliminata');
+  }
+}
+
+/* ---------------- Photo Triggers ---------------- */
+function triggerCameraInput(prefix){ document.getElementById(prefix + '-camera-input').click(); }
+function triggerGalleryInput(prefix){ document.getElementById(prefix + '-gallery-input').click(); }
 
 function handlePhotoSelected(event, prefix){
   const file = event.target.files[0];
   if(!file) return;
   compressImage(file, 300, (dataUrl) => {
-    if(prefix === 'reg') {
-      selectedRegPhoto = dataUrl;
-    } else {
-      selectedEditPhoto = dataUrl;
-    }
+    if(prefix === 'reg') selectedRegPhoto = dataUrl; else selectedEditPhoto = dataUrl;
     updateAvatarPreview(prefix);
     toast('Foto caricata!');
   });
 }
 
 function removePhoto(prefix){
-  if(prefix === 'reg') {
-    selectedRegPhoto = null;
-  } else {
-    selectedEditPhoto = null;
-  }
+  if(prefix === 'reg') selectedRegPhoto = null; else selectedEditPhoto = null;
   updateAvatarPreview(prefix);
 }
 
@@ -961,13 +1296,10 @@ function updateAvatarPreview(prefix){
   }
 }
 
-/* ---------------- Registration Modal ---------------- */
+/* ---------------- Registration & Profile Modals ---------------- */
 function openRegistrationModal(isNewUser = false){
-  selectedRegColor = '#22c55e';
-  selectedRegPhoto = null;
-  document.getElementById('reg-name').value = '';
-  document.getElementById('reg-email').value = '';
-  
+  selectedRegColor = '#22c55e'; selectedRegPhoto = null;
+  document.getElementById('reg-name').value = ''; document.getElementById('reg-email').value = '';
   if(isNewUser){
     document.getElementById('reg-title').textContent = 'Aggiungi Nuovo Profilo';
     document.getElementById('reg-sub').textContent = 'Crea un secondo account sul tuo dispositivo.';
@@ -975,47 +1307,33 @@ function openRegistrationModal(isNewUser = false){
     document.getElementById('reg-title').textContent = 'Crea il tuo Profilo';
     document.getElementById('reg-sub').textContent = 'Registrati per iniziare a tracciare le tue finanze.';
   }
-
-  renderPicker('reg');
   updateAvatarPreview('reg');
   document.getElementById('reg-overlay').classList.add('open');
 }
 
-function closeRegistrationModal(){
-  document.getElementById('reg-overlay').classList.remove('open');
-}
+function closeRegistrationModal(){ document.getElementById('reg-overlay').classList.remove('open'); }
 
 function submitRegistration(){
   const name = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim() || (name.toLowerCase().replace(/\s+/g,'') + '@moneysaver.app');
-  if(!name){
-    toast('Inserisci il tuo nome');
-    return;
-  }
+  if(!name){ toast('Inserisci il tuo nome'); return; }
   const newUser = {
-    id: 'usr_' + Date.now(),
-    name: name,
-    email: email,
-    photo: selectedRegPhoto,
-    color: selectedRegColor,
+    id: 'usr_' + Date.now(), name: name, email: email, photo: selectedRegPhoto, color: selectedRegColor,
     createdAt: new Date().toLocaleDateString('it-IT', {month:'short', year:'numeric'}),
     state: {
-      balance: 0, balanceHidden: false, transactions: [],
+      balance: 0, balanceHidden: false, themeMode: 'dark', accentColor: '#22c55e', notificationsEnabled: false, transactions: [],
       bars: [[20,35],[40,60],[30,45],[55,75],[60,85],[70,90]],
       categories: JSON.parse(JSON.stringify(defaultCategories)),
       billsDue: [], billsPaid: [], friends: JSON.parse(JSON.stringify(defaultDemoFriends)), splitList: [], goals: []
     }
   };
-  users.push(newUser);
-  activeUserId = newUser.id;
-  saveUsers();
+  users.push(newUser); activeUserId = newUser.id; saveUsers();
   closeRegistrationModal();
   if(document.getElementById('drawer-back').classList.contains('open')) closeProfileDrawer();
   loadActiveUser();
   toast('Benvenuto, ' + name + '! 🎉');
 }
 
-/* ---------------- Edit Profile Modal ---------------- */
 function openEditProfile(){
   const user = users.find(u=>u.id===activeUserId);
   if(!user) return;
@@ -1023,14 +1341,11 @@ function openEditProfile(){
   document.getElementById('edit-email').value = user.email;
   selectedEditColor = user.color || '#22c55e';
   selectedEditPhoto = user.photo || null;
-  renderPicker('edit');
   updateAvatarPreview('edit');
   document.getElementById('edit-overlay').classList.add('open');
 }
 
-function closeEditProfile(){
-  document.getElementById('edit-overlay').classList.remove('open');
-}
+function closeEditProfile(){ document.getElementById('edit-overlay').classList.remove('open'); }
 
 function saveProfileChanges(){
   const user = users.find(u=>u.id===activeUserId);
@@ -1048,22 +1363,7 @@ function saveProfileChanges(){
   toast('Profilo aggiornato!');
 }
 
-/* ---------------- Render Pickers ---------------- */
-function renderPicker(prefix){
-  const colorsDiv = document.getElementById(prefix + '-color-pick');
-  const selColor = prefix === 'reg' ? selectedRegColor : selectedEditColor;
-  colorsDiv.innerHTML = colors.map(c => `
-    <div class="color-dot ${c === selColor ? 'sel' : ''}" style="background:${c}" onclick="selectColor('${prefix}', '${c}')"></div>
-  `).join('');
-}
-
-function selectColor(prefix, c){
-  if(prefix === 'reg') selectedRegColor = c; else selectedEditColor = c;
-  renderPicker(prefix);
-  updateAvatarPreview(prefix);
-}
-
-/* ---------------- Profile Side Drawer Actions ---------------- */
+/* ---------------- Drawer Actions ---------------- */
 function openProfileDrawer(){
   const user = users.find(u=>u.id===activeUserId);
   if(!user) return;
@@ -1074,7 +1374,6 @@ function openProfileDrawer(){
   document.getElementById('drawer-name').textContent = user.name;
   document.getElementById('drawer-email').textContent = user.email;
   document.getElementById('drawer-badge').textContent = 'Membro dal ' + (user.createdAt || 'Lug 2026');
-
   document.getElementById('drawer-stat-tx').textContent = state.transactions ? state.transactions.length : 0;
   
   let savedSum = 0;
@@ -1089,13 +1388,12 @@ function openProfileDrawer(){
   }
   document.getElementById('drawer-stat-savings').textContent = eurShort(savedSum);
 
+  renderAccentPickers();
   renderUserSwitchList();
   document.getElementById('drawer-back').classList.add('open');
 }
 
-function closeProfileDrawer(){
-  document.getElementById('drawer-back').classList.remove('open');
-}
+function closeProfileDrawer(){ document.getElementById('drawer-back').classList.remove('open'); }
 
 function renderUserSwitchList(){
   const container = document.getElementById('user-switch-list');
@@ -1110,10 +1408,7 @@ function renderUserSwitchList(){
 
 function switchUser(id){
   if(id === activeUserId) return;
-  activeUserId = id;
-  saveUsers();
-  loadActiveUser();
-  closeProfileDrawer();
+  activeUserId = id; saveUsers(); loadActiveUser(); closeProfileDrawer();
   toast('Profilo cambiato!');
 }
 
@@ -1125,14 +1420,11 @@ function exportUserData(){
   dlAnchorElem.setAttribute("href", dataStr);
   dlAnchorElem.setAttribute("download", `trackly-backup-${user.name.toLowerCase().replace(/\s+/g,'_')}.json`);
   document.body.appendChild(dlAnchorElem);
-  dlAnchorElem.click();
-  dlAnchorElem.remove();
+  dlAnchorElem.click(); dlAnchorElem.remove();
   toast('Backup scaricato!');
 }
 
-function triggerImportData(){
-  document.getElementById('import-file-input').click();
-}
+function triggerImportData(){ document.getElementById('import-file-input').click(); }
 
 function handleImportFile(event){
   const file = event.target.files[0];
@@ -1143,18 +1435,11 @@ function handleImportFile(event){
       const importedUser = JSON.parse(e.target.result);
       if(importedUser && importedUser.name && importedUser.state){
         importedUser.id = 'usr_' + Date.now();
-        users.push(importedUser);
-        activeUserId = importedUser.id;
-        saveUsers();
-        loadActiveUser();
-        closeProfileDrawer();
+        users.push(importedUser); activeUserId = importedUser.id;
+        saveUsers(); loadActiveUser(); closeProfileDrawer();
         toast('Profilo importato!');
-      } else {
-        toast('File di backup non valido');
-      }
-    } catch(err){
-      toast('Errore nel file JSON');
-    }
+      } else { toast('File non valido'); }
+    } catch(err){ toast('Errore nel file JSON'); }
   };
   reader.readAsText(file);
 }
@@ -1162,14 +1447,12 @@ function handleImportFile(event){
 function resetActiveUser(){
   if(confirm('Sei sicuro di voler azzerare tutti i dati del tuo profilo corrente?')){
     state = {
-      balance: 0, balanceHidden: false, transactions: [],
+      balance: 0, balanceHidden: false, themeMode: 'dark', accentColor: '#22c55e', notificationsEnabled: false, transactions: [],
       bars: [[20,35],[40,60],[30,45],[55,75],[60,85],[70,90]],
       categories: JSON.parse(JSON.stringify(defaultCategories)),
       billsDue: [], billsPaid: [], friends: JSON.parse(JSON.stringify(defaultDemoFriends)), splitList: [], goals: []
     };
-    saveActiveUser();
-    loadActiveUser();
-    closeProfileDrawer();
+    saveActiveUser(); loadActiveUser(); closeProfileDrawer();
     toast('Dati del profilo azzerati');
   }
 }
@@ -1219,12 +1502,33 @@ function renderTx(){
     el.innerHTML = `<div style="text-align:center;padding:24px;color:var(--grey);font-size:13px;font-weight:600;">Nessuna transazione ancora.<br>Usa il tasto + per aggiungerne una!</div>`;
     return;
   }
-  el.innerHTML = state.transactions.slice(0,8).map(t=>{
+
+  const query = (document.getElementById('tx-search') ? document.getElementById('tx-search').value.toLowerCase().trim() : '');
+  const monthFilter = (document.getElementById('tx-month-filter') ? document.getElementById('tx-month-filter').value : 'all');
+  const nowStr = new Date().toISOString().slice(0, 7);
+
+  const filtered = state.transactions.filter(t => {
+    const matchQuery = !query || t.n.toLowerCase().includes(query) || t.c.toLowerCase().includes(query);
+    const tMonth = (t.date || nowStr).slice(0, 7);
+    const matchMonth = (monthFilter === 'all') || (monthFilter === 'current' && tMonth === nowStr);
+    return matchQuery && matchMonth;
+  });
+
+  if(!filtered.length){
+    el.innerHTML = `<div style="text-align:center;padding:20px;color:var(--grey);font-size:12px;font-weight:600;">Nessun risultato per la ricerca</div>`;
+    return;
+  }
+
+  el.innerHTML = filtered.map((t, idx)=>{
+    const realIdx = state.transactions.indexOf(t);
     const iconHTML = categoryIconsSVG[t.c] || `<svg class="icon" viewBox="0 0 24 24" style="color:var(--green-deep)"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
     return `
-    <div class="tx">
+    <div class="tx" onclick="openEditTxSheet(${realIdx})" title="Clicca per modificare o eliminare">
       <div class="ic" style="background:${t.bg}">${iconHTML}</div>
-      <div class="info"><div class="n">${t.n}</div><div class="c">${t.c}</div></div>
+      <div class="info">
+        <div class="n">${t.n}</div>
+        <div class="c">${t.c} • ${t.date || 'Oggi'}</div>
+      </div>
       <div class="amt ${t.pos?'pos':'neg'}">${t.pos?'+':''}${eur(Math.abs(t.amt)).replace('€', t.pos?'€':'−€')}</div>
     </div>`;
   }).join('');
@@ -1316,10 +1620,10 @@ function renderBudget(){
   const donut = document.getElementById('donut');
 
   if(total <= 0){
-    donut.innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="#f0f3f2" stroke-width="5"/>` +
-      `<text x="21" y="20" text-anchor="middle" font-size="6" font-weight="800" fill="#0f1715">€0</text><text x="21" y="26" text-anchor="middle" font-size="2.6" fill="#86928e" font-weight="700">spesi</text>`;
+    donut.innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="#252e2a" stroke-width="5"/>` +
+      `<text x="21" y="20" text-anchor="middle" font-size="6" font-weight="800" fill="var(--ink)">€0</text><text x="21" y="26" text-anchor="middle" font-size="2.6" fill="var(--grey)" font-weight="700">spesi</text>`;
   } else {
-    donut.innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="#f0f3f2" stroke-width="5"/>` +
+    donut.innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="#252e2a" stroke-width="5"/>` +
       state.categories.map((c,i)=>{
         const pct = ((c.v||0) / total) * 100;
         if(pct <= 0) return '';
@@ -1327,7 +1631,7 @@ function renderBudget(){
         off += pct;
         return seg;
       }).join('') +
-      `<text x="21" y="20" text-anchor="middle" font-size="6" font-weight="800" fill="#0f1715">${eurShort(total)}</text><text x="21" y="26" text-anchor="middle" font-size="2.6" fill="#86928e" font-weight="700">totale</text>`;
+      `<text x="21" y="20" text-anchor="middle" font-size="6" font-weight="800" fill="var(--ink)">${eurShort(total)}</text><text x="21" y="26" text-anchor="middle" font-size="2.6" fill="var(--grey)" font-weight="700">totale</text>`;
   }
 
   document.getElementById('donut-legend').innerHTML = state.categories.slice(0,5).map((c,i)=>`
@@ -1448,11 +1752,13 @@ function saveTx(){
   if(val<=0){ toast('Inserisci un importo valido'); return; }
   const cat = addCat!=null?catList[addCat]:{n:'Altro'};
   const desc = document.getElementById('desc').value || cat.n;
-  const bgMap={'Spesa':'#d1fae5','Trasporti':'#dbeafe','Ristoranti':'#fef3c7','Shopping':'#ede9fe','Casa':'#fee2e2','Abbonamenti':'#ffe4e6','Salute':'#ccfbf1','Altro':'#f1f5f9','Entrata':'#d1fae5'};
+  const bgMap={'Spesa':'rgba(34, 197, 94, 0.15)','Trasporti':'rgba(37, 99, 235, 0.15)','Ristoranti':'rgba(217, 119, 6, 0.15)','Shopping':'rgba(124, 58, 237, 0.15)','Casa':'rgba(220, 38, 38, 0.15)','Abbonamenti':'rgba(225, 29, 72, 0.15)','Salute':'rgba(13, 148, 136, 0.15)','Altro':'rgba(71, 85, 105, 0.15)','Entrata':'rgba(34, 197, 94, 0.15)'};
   
+  const dStr = new Date().toISOString().split('T')[0];
+
   state.transactions.unshift({
     n:desc, c:addType==='income'?'Entrata':cat.n,
-    bg:bgMap[cat.n]||'#f1f5f9', amt:addType==='income'?val:-val, pos:addType==='income'
+    bg:bgMap[cat.n]||'rgba(71, 85, 105, 0.15)', amt:addType==='income'?val:-val, pos:addType==='income', date: dStr
   });
   state.balance += addType==='income'?val:-val;
   
@@ -1465,6 +1771,7 @@ function saveTx(){
   saveActiveUser();
   closeAdd();
   toast(addType==='income'?'Entrata aggiunta!':'Spesa registrata!');
+  checkBudgetNotifications();
 }
 
 /* ---------------- Toast ---------------- */
