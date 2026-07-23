@@ -1,5 +1,5 @@
 /* Money Saver — service worker (offline cache & network-first updates) */
-const CACHE = 'money-saver-v10';
+const CACHE = 'money-saver-v11';
 const ASSETS = [
   'index.html',
   'money-saver.html',

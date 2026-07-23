@@ -871,6 +871,23 @@ svg.icon{
         </div>
       </div>
 
+      <div class="drawer-sec-title">🎁 Invita Amici in Trackly</div>
+      <div class="drawer-menu">
+        <div style="background:var(--card-bg);border:1px solid var(--grey-line);border-radius:18px;padding:14px;box-shadow:var(--shadow-sm);">
+          <div style="font-size:12px;font-weight:800;color:var(--ink);margin-bottom:4px;">Il tuo Link Invito Personale:</div>
+          <input type="text" id="referral-link-input" readonly class="txt-field" style="font-size:11px;padding:8px 10px;color:var(--green);margin-bottom:10px;" value="https://tracklymoneysaver.netlify.app/?ref=LORENZO">
+          
+          <div style="display:flex;gap:8px;">
+            <button class="photo-btn" style="flex:1;justify-content:center;" onclick="copyReferralLink()">
+              📋 Copia Link
+            </button>
+            <button class="photo-btn" style="flex:1;justify-content:center;background:#25D366;color:#fff;border:none;" onclick="shareReferralWhatsApp()">
+              💬 WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="drawer-sec-title">Cloud Sync & Backup</div>
       <div class="drawer-menu">
         <button class="d-menu-btn" onclick="toggleCloudSync()">
@@ -1629,9 +1646,43 @@ function renderAccentPickers(){
   `).join('');
 }
 
-/* ---------------- Apple Pay Auto-Log URL Handler ---------------- */
+/* ---------------- Invite Friends & Referral System ---------------- */
+function getReferralLink(){
+  const user = users.find(u => u.id === activeUserId);
+  const code = user ? user.name.toUpperCase().replace(/[^A-Z0-9]/g, '') : 'FRIEND';
+  return `https://tracklymoneysaver.netlify.app/?ref=${code}`;
+}
+
+function copyReferralLink(){
+  const link = getReferralLink();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(() => {
+      toast('Link invito copiato negli appunti! 📋');
+    }).catch(() => {
+      prompt('Copia il tuo link invito:', link);
+    });
+  } else {
+    prompt('Copia il tuo link invito:', link);
+  }
+}
+
+function shareReferralWhatsApp(){
+  const user = users.find(u => u.id === activeUserId);
+  const name = user ? user.name.split(' ')[0] : 'Lorenzo';
+  const link = getReferralLink();
+  const text = `Ciao! 👋 ${name} ti ha invitato su Trackly per tracciare le spese e risparmiare insieme.\n\nUnisciti subito da qui: ${link} 🚀`;
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+/* ---------------- Apple Pay Auto-Log & Referral URL Handler ---------------- */
 function handleURLAutoLog(){
   const params = new URLSearchParams(window.location.search);
+
+  const refCode = params.get('ref');
+  if(refCode){
+    toast(`🎉 Benvenuto! Ti sei unito a Trackly tramite l'invito di ${escapeHTML(refCode)}!`);
+  }
+
   const amtStr = params.get('amount') || params.get('amt');
   if(!amtStr) return;
   const val = parseFloat(amtStr.replace(',','.'));
@@ -1964,6 +2015,8 @@ function openProfileDrawer(){
 
   renderAccentPickers();
   renderUserSwitchList();
+  const refInput = document.getElementById('referral-link-input');
+  if(refInput) refInput.value = getReferralLink();
   document.getElementById('drawer-back').classList.add('open');
 }
 
