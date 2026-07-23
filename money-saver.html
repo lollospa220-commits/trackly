@@ -167,7 +167,7 @@ svg.icon{
 .bar.hi::after{content:attr(data-v);position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:3px 7px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 10px var(--green-glow);}
 .bar-wrap small{font-size:10px;color:var(--grey);font-weight:700;}
 
-/* ---------- Category Items (SVG Icons) ---------- */
+/* ---------- Category Items ---------- */
 .cats{display:flex;gap:10px;overflow-x:auto;padding:2px 0 4px;margin:0 -20px;padding-left:20px;padding-right:20px;}
 .cats::-webkit-scrollbar{display:none;}
 .cat{flex:0 0 auto;background:var(--card-bg);border-radius:20px;padding:14px 16px;min-width:128px;box-shadow:var(--shadow-sm);border:1px solid var(--grey-line);}
@@ -184,7 +184,7 @@ svg.icon{
 .filter-row input{flex:1;}
 .filter-row select{flex:0 0 120px;}
 
-/* ---------- Transactions List (Editable on Click) ---------- */
+/* ---------- Transactions List ---------- */
 .tx{display:flex;align-items:center;gap:14px;padding:14px 4px;border-bottom:1px solid var(--grey-line);cursor:pointer;transition:background .15s;}
 .tx:hover{background:var(--green-soft);}
 .tx:last-child{border-bottom:none;}
@@ -213,7 +213,7 @@ svg.icon{
 .friends-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:10px 0;}
 .friend-card{background:var(--card-bg);border-radius:20px;padding:12px 8px;text-align:center;cursor:pointer;border:2px solid transparent;box-shadow:var(--shadow-sm);transition:all .2s;position:relative;}
 .friend-card.sel{border-color:var(--green);background:var(--green-soft);transform:scale(1.02);}
-.friend-card .avatar-box{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;position:relative;overflow:hidden;border:2px solid var(--card-bg);box-shadow:0 4px 10px rgba(0,0,0,.08);}
+.friend-card .avatar-box{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;position:relative;overflow:hidden;border:2px solid var(--card-bg);box-shadow:0 4px 10px rgba(0,0,0,.08);background:var(--grey-light);}
 .friend-card .avatar-box img{width:100%;height:100%;object-fit:cover;}
 .friend-card .chk-badge{position:absolute;right:2px;bottom:2px;width:18px;height:18px;background:var(--green);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;}
 .friend-card.sel .chk-badge{display:flex;}
@@ -789,7 +789,27 @@ svg.icon{
 </div>
 
 <script>
-/* ---------------- Helpers ---------------- */
+/* ---------------- Security & Helpers ---------------- */
+function escapeHTML(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/[&<>"']/g, function(m) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[m];
+  });
+}
+
+function getLocalDateString(d = new Date()) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 const eur = n => '€' + n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
 const eurShort = n => '€' + Math.round(n).toLocaleString('it-IT');
 
@@ -830,7 +850,7 @@ const defaultDemoFriends = [
   {n:'Denis G.', img:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80', sel:true}
 ];
 
-/* ---------------- Image Compression Helper ---------------- */
+/* ---------------- Image Compression Helper (Optimized for Storage) ---------------- */
 function compressImage(file, maxSize, callback) {
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -854,7 +874,7 @@ function compressImage(file, maxSize, callback) {
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
-      callback(canvas.toDataURL('image/jpeg', 0.85));
+      callback(canvas.toDataURL('image/jpeg', 0.75));
     };
     img.src = e.target.result;
   };
@@ -958,7 +978,12 @@ function loadActiveUser(){
     billsDue: [], billsPaid: [], friends: JSON.parse(JSON.stringify(defaultDemoFriends)), splitList: [], goals: []
   }, user.state || {});
 
-  // Apply theme & accent
+  if(state.categories){
+    state.categories.forEach(c => {
+      if(!c.icSVG && categoryIconsSVG[c.n]) c.icSVG = categoryIconsSVG[c.n];
+    });
+  }
+
   applyTheme(state.themeMode || 'dark');
   setAccentColor(state.accentColor || '#22c55e', false);
 
@@ -979,11 +1004,17 @@ function saveUsers(){
   try {
     localStorage.setItem(PROFILES_KEY, JSON.stringify(users));
     localStorage.setItem(ACTIVE_USER_KEY, activeUserId);
-  } catch(e){}
+  } catch(e){
+    if(e.name === 'QuotaExceededError' || e.code === 22) {
+      toast('⚠️ Memoria piena! Rimuovi una foto o un vecchio profilo.');
+    } else {
+      toast('⚠️ Errore nel salvataggio in memoria.');
+    }
+  }
 }
 
 function updateHeaderUI(user){
-  document.getElementById('hello-name').textContent = (user.name.split(' ')[0] || user.name);
+  document.getElementById('hello-name').textContent = escapeHTML(user.name.split(' ')[0] || user.name);
   const avEl = document.getElementById('user-avatar');
   avEl.innerHTML = renderAvatarHTML(user);
   avEl.style.background = user.photo ? 'transparent' : (user.color || '#22c55e');
@@ -1026,11 +1057,11 @@ function renderAccentPickers(){
   const container = document.getElementById('accent-picker-drawer');
   if(!container) return;
   container.innerHTML = accentColors.map(c => `
-    <div class="color-dot ${c.hex === state.accentColor ? 'sel' : ''}" style="background:${c.hex}" title="${c.name}" onclick="setAccentColor('${c.hex}')"></div>
+    <div class="color-dot ${c.hex === state.accentColor ? 'sel' : ''}" style="background:${c.hex}" title="${escapeHTML(c.name)}" onclick="setAccentColor('${c.hex}')"></div>
   `).join('');
 }
 
-/* ---------------- Feature 2: URL Auto-Log for Apple Pay ---------------- */
+/* ---------------- Apple Pay Auto-Log URL Handler ---------------- */
 function handleURLAutoLog(){
   const params = new URLSearchParams(window.location.search);
   const amtStr = params.get('amount') || params.get('amt');
@@ -1041,31 +1072,30 @@ function handleURLAutoLog(){
     const catName = params.get('cat') || params.get('category') || 'Altro';
     const isIncome = params.get('type') === 'income';
 
-    const bgMap={'Spesa':'rgba(34, 197, 94, 0.15)','Trasporti':'rgba(37, 99, 235, 0.15)','Ristoranti':'rgba(217, 119, 6, 0.15)','Shopping':'rgba(124, 58, 237, 0.15)','Casa':'rgba(220, 38, 38, 0.15)','Abbonamenti':'rgba(225, 29, 72, 0.15)','Salute':'rgba(13, 148, 136, 0.15)','Altro':'rgba(71, 85, 105, 0.15)'};
+    if(confirm(`⚡ Confermi la registrazione della spesa Apple Pay?\n\nDescrizione: ${desc}\nImporto: ${eur(val)}`)) {
+      const bgMap={'Spesa':'rgba(34, 197, 94, 0.15)','Trasporti':'rgba(37, 99, 235, 0.15)','Ristoranti':'rgba(217, 119, 6, 0.15)','Shopping':'rgba(124, 58, 237, 0.15)','Casa':'rgba(220, 38, 38, 0.15)','Abbonamenti':'rgba(225, 29, 72, 0.15)','Salute':'rgba(13, 148, 136, 0.15)','Altro':'rgba(71, 85, 105, 0.15)'};
 
-    const d = new Date();
-    const dateStr = d.toISOString().split('T')[0];
+      state.transactions.unshift({
+        n: desc, c: isIncome ? 'Entrata' : catName,
+        bg: bgMap[catName] || 'rgba(71, 85, 105, 0.15)',
+        amt: isIncome ? val : -val, pos: isIncome, date: getLocalDateString()
+      });
+      state.balance += isIncome ? val : -val;
 
-    state.transactions.unshift({
-      n: desc, c: isIncome ? 'Entrata' : catName,
-      bg: bgMap[catName] || 'rgba(71, 85, 105, 0.15)',
-      amt: isIncome ? val : -val, pos: isIncome, date: dateStr
-    });
-    state.balance += isIncome ? val : -val;
+      if(!isIncome){
+        const c = state.categories.find(x => x.n === catName);
+        if(c) c.v = (c.v||0) + val;
+      }
 
-    if(!isIncome){
-      const c = state.categories.find(x => x.n === catName);
-      if(c) c.v = (c.v||0) + val;
+      renderAll();
+      saveActiveUser();
+      toast('⚡ Apple Pay: ' + (isIncome ? '+' : '−') + eur(val) + ' registrato!');
     }
-
-    renderAll();
-    saveActiveUser();
     window.history.replaceState({}, document.title, window.location.pathname);
-    toast('⚡ Apple Pay: ' + (isIncome ? '+' : '−') + eur(val) + ' registrato!');
   }
 }
 
-/* ---------------- Feature 3: Notifications & Alert System ---------------- */
+/* ---------------- Notifications & Alerts ---------------- */
 function requestNotificationPermission(){
   if(!('Notification' in window)){
     toast('Notifiche non supportate su questo browser');
@@ -1096,7 +1126,7 @@ function checkBudgetNotifications(){
   });
 }
 
-/* ---------------- Feature 4: PDF & CSV Reports ---------------- */
+/* ---------------- Reports ---------------- */
 function exportCSV(){
   if(!state.transactions || !state.transactions.length){
     toast('Nessuna transazione da esportare');
@@ -1104,14 +1134,14 @@ function exportCSV(){
   }
   let csvContent = "data:text/csv;charset=utf-8,Data,Descrizione,Categoria,Tipo,Importo (€)\n";
   state.transactions.forEach(t => {
-    const d = t.date || new Date().toISOString().split('T')[0];
+    const d = t.date || getLocalDateString();
     const typeStr = t.pos ? 'Entrata' : 'Spesa';
     csvContent += `"${d}","${t.n.replace(/"/g, '""')}","${t.c}","${typeStr}","${t.amt.toFixed(2)}"\n`;
   });
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `trackly-transazioni-${new Date().toISOString().split('T')[0]}.csv`);
+  link.setAttribute("download", `trackly-transazioni-${getLocalDateString()}.csv`);
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -1128,7 +1158,7 @@ function exportPDF(){
     <!DOCTYPE html>
     <html>
     <head>
-      <title>Trackly — Report Finanziario (${user.name})</title>
+      <title>Trackly — Report Finanziario (${escapeHTML(user.name)})</title>
       <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 30px; color: #111; }
         h1 { font-size: 24px; color: #059669; }
@@ -1142,7 +1172,7 @@ function exportPDF(){
     </head>
     <body>
       <h1>Trackly — Report Finanziario</h1>
-      <p>Utente: <strong>${user.name}</strong> | Data: <strong>${new Date().toLocaleDateString('it-IT')}</strong></p>
+      <p>Utente: <strong>${escapeHTML(user.name)}</strong> | Data: <strong>${new Date().toLocaleDateString('it-IT')}</strong></p>
       
       <div class="hero">
         <div>Saldo Totale</div>
@@ -1163,8 +1193,8 @@ function exportPDF(){
           ${(state.transactions||[]).map(t => `
             <tr>
               <td>${t.date || '-'}</td>
-              <td>${t.n}</td>
-              <td>${t.c}</td>
+              <td>${escapeHTML(t.n)}</td>
+              <td>${escapeHTML(t.c)}</td>
               <td style="color:${t.pos?'#059669':'#111'};font-weight:bold;">${t.pos?'+':''}${eur(t.amt)}</td>
             </tr>
           `).join('')}
@@ -1178,18 +1208,18 @@ function exportPDF(){
   setTimeout(() => { printWin.print(); }, 500);
 }
 
-/* ---------------- Feature 1: CRUD Edit & Delete Tx ---------------- */
+/* ---------------- CRUD Edit & Delete Tx ---------------- */
 function openEditTxSheet(idx){
   const t = state.transactions[idx];
   if(!t) return;
   editingTxIndex = idx;
   document.getElementById('edit-tx-desc').value = t.n;
   document.getElementById('edit-tx-amt').value = Math.abs(t.amt);
-  document.getElementById('edit-tx-date').value = t.date || new Date().toISOString().split('T')[0];
+  document.getElementById('edit-tx-date').value = t.date || getLocalDateString();
 
   const catSelect = document.getElementById('edit-tx-cat');
   catSelect.innerHTML = defaultCategories.map(c => `
-    <option value="${c.n}" ${c.n === t.c ? 'selected' : ''}>${c.n}</option>
+    <option value="${escapeHTML(c.n)}" ${c.n === t.c ? 'selected' : ''}>${escapeHTML(c.n)}</option>
   `).join('');
 
   document.getElementById('edit-tx-sheet').classList.add('open');
@@ -1213,25 +1243,21 @@ function saveEditedTx(){
 
   if(newAmtVal <= 0){ toast('Inserisci un importo valido'); return; }
 
-  // Adjust old category spent value
   if(!t.pos){
     const cOld = state.categories.find(x=>x.n===oldCat);
     if(cOld) cOld.v = Math.max(0, (cOld.v||0) - Math.abs(oldAmt));
   }
 
-  // Set new values
   t.n = newDesc;
   t.c = newCat;
   t.date = newDate;
   t.amt = t.pos ? newAmtVal : -newAmtVal;
 
-  // Adjust new category spent value
   if(!t.pos){
     const cNew = state.categories.find(x=>x.n===newCat);
     if(cNew) cNew.v = (cNew.v||0) + newAmtVal;
   }
 
-  // Adjust balance difference
   const diff = t.amt - oldAmt;
   state.balance += diff;
 
@@ -1267,10 +1293,10 @@ function triggerGalleryInput(prefix){ document.getElementById(prefix + '-gallery
 function handlePhotoSelected(event, prefix){
   const file = event.target.files[0];
   if(!file) return;
-  compressImage(file, 300, (dataUrl) => {
+  compressImage(file, 200, (dataUrl) => {
     if(prefix === 'reg') selectedRegPhoto = dataUrl; else selectedEditPhoto = dataUrl;
     updateAvatarPreview(prefix);
-    toast('Foto caricata!');
+    toast('Foto caricata e ottimizzata!');
   });
 }
 
@@ -1331,7 +1357,7 @@ function submitRegistration(){
   closeRegistrationModal();
   if(document.getElementById('drawer-back').classList.contains('open')) closeProfileDrawer();
   loadActiveUser();
-  toast('Benvenuto, ' + name + '! 🎉');
+  toast('Benvenuto, ' + escapeHTML(name) + '! 🎉');
 }
 
 function openEditProfile(){
@@ -1371,9 +1397,9 @@ function openProfileDrawer(){
   avEl.innerHTML = renderAvatarHTML(user);
   avEl.style.background = user.photo ? 'transparent' : (user.color || '#22c55e');
 
-  document.getElementById('drawer-name').textContent = user.name;
-  document.getElementById('drawer-email').textContent = user.email;
-  document.getElementById('drawer-badge').textContent = 'Membro dal ' + (user.createdAt || 'Lug 2026');
+  document.getElementById('drawer-name').textContent = escapeHTML(user.name);
+  document.getElementById('drawer-email').textContent = escapeHTML(user.email);
+  document.getElementById('drawer-badge').textContent = 'Membro dal ' + escapeHTML(user.createdAt || 'Lug 2026');
   document.getElementById('drawer-stat-tx').textContent = state.transactions ? state.transactions.length : 0;
   
   let savedSum = 0;
@@ -1400,7 +1426,7 @@ function renderUserSwitchList(){
   container.innerHTML = users.map(u => `
     <div class="user-item ${u.id===activeUserId ? 'active' : ''}" onclick="switchUser('${u.id}')">
       <div class="u-av" style="background:${u.photo?'transparent':u.color}">${renderAvatarHTML(u)}</div>
-      <div class="u-name">${u.name}</div>
+      <div class="u-name">${escapeHTML(u.name)}</div>
       ${u.id===activeUserId ? '<span class="u-chk">✓ Attivo</span>' : ''}
     </div>
   `).join('');
@@ -1489,7 +1515,7 @@ function renderCats(){
     return `
     <div class="cat">
       <div class="ic" style="background:${c.bg}">${iconHTML}</div>
-      <div class="n">${c.n}</div>
+      <div class="n">${escapeHTML(c.n)}</div>
       <div class="v">${eurShort(c.v||0)}</div>
       <div class="progress"><i style="width:${Math.min(100, (c.v||0)/(c.budget||1)*100)}%;background:${(c.v||0)/(c.budget||1)>0.9?'var(--danger)':'var(--green)'}"></i></div>
     </div>`;
@@ -1505,7 +1531,7 @@ function renderTx(){
 
   const query = (document.getElementById('tx-search') ? document.getElementById('tx-search').value.toLowerCase().trim() : '');
   const monthFilter = (document.getElementById('tx-month-filter') ? document.getElementById('tx-month-filter').value : 'all');
-  const nowStr = new Date().toISOString().slice(0, 7);
+  const nowStr = getLocalDateString().slice(0, 7);
 
   const filtered = state.transactions.filter(t => {
     const matchQuery = !query || t.n.toLowerCase().includes(query) || t.c.toLowerCase().includes(query);
@@ -1526,8 +1552,8 @@ function renderTx(){
     <div class="tx" onclick="openEditTxSheet(${realIdx})" title="Clicca per modificare o eliminare">
       <div class="ic" style="background:${t.bg}">${iconHTML}</div>
       <div class="info">
-        <div class="n">${t.n}</div>
-        <div class="c">${t.c} • ${t.date || 'Oggi'}</div>
+        <div class="n">${escapeHTML(t.n)}</div>
+        <div class="c">${escapeHTML(t.c)} • ${escapeHTML(t.date || 'Oggi')}</div>
       </div>
       <div class="amt ${t.pos?'pos':'neg'}">${t.pos?'+':''}${eur(Math.abs(t.amt)).replace('€', t.pos?'€':'−€')}</div>
     </div>`;
@@ -1538,8 +1564,8 @@ function renderBills(){
   const row = b=>`
     <div class="bill">
       <div class="ic" style="background:${b.bg}">${b.icSVG || categoryIconsSVG['Abbonamenti']}</div>
-      <div class="info"><div class="n">${b.n}</div><div class="d">${b.d}</div></div>
-      <div class="right"><div class="a">${eur(b.a)}</div><span class="badge ${b.badge}">${b.bt}</span></div>
+      <div class="info"><div class="n">${escapeHTML(b.n)}</div><div class="d">${escapeHTML(b.d)}</div></div>
+      <div class="right"><div class="a">${eur(b.a)}</div><span class="badge ${b.badge}">${escapeHTML(b.bt)}</span></div>
     </div>`;
   const dueEl = document.getElementById('bills-due');
   const paidEl = document.getElementById('bills-paid');
@@ -1571,10 +1597,10 @@ function renderFriends(){
   container.innerHTML = state.friends.map((f,i)=>`
     <div class="friend-card ${f.sel?'sel':''}" onclick="toggleFriend(${i})">
       <div class="avatar-box">
-        <img src="${f.img}" alt="${f.n}">
+        <img src="${f.img}" alt="${escapeHTML(f.n)}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\'><circle cx=\\'12\\' cy=\\'8\\' r=\\'4\\'/><path d=\\'M20 21a8 8 0 0 0-16 0\\'/></svg>'">
       </div>
       <div class="chk-badge"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <div class="fn">${f.n}</div>
+      <div class="fn">${escapeHTML(f.n)}</div>
     </div>`).join('');
   updateSplit();
 }
@@ -1590,7 +1616,7 @@ function renderSplitList(){
     return `
     <div class="tx">
       <div class="ic" style="background:${t.bg}">${iconHTML}</div>
-      <div class="info"><div class="n">${t.n}</div><div class="c">${t.c}</div></div>
+      <div class="info"><div class="n">${escapeHTML(t.n)}</div><div class="c">${escapeHTML(t.c)}</div></div>
       <div class="amt neg">${eur(Math.abs(t.amt))}</div>
     </div>`;
   }).join('');
@@ -1598,7 +1624,7 @@ function renderSplitList(){
 
 function updateSplit(){
   const selFriends = state.friends ? state.friends.filter(f=>f.sel).length : 0;
-  const n = selFriends + 1; // +me
+  const n = selFriends + 1;
   const per = 128 / n;
   document.getElementById('perhead').textContent = eur(per);
   document.getElementById('perhead-lbl').textContent = 'A testa ('+n+')';
@@ -1620,10 +1646,10 @@ function renderBudget(){
   const donut = document.getElementById('donut');
 
   if(total <= 0){
-    donut.innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="#252e2a" stroke-width="5"/>` +
+    donut.innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--grey-line)" stroke-width="5"/>` +
       `<text x="21" y="20" text-anchor="middle" font-size="6" font-weight="800" fill="var(--ink)">€0</text><text x="21" y="26" text-anchor="middle" font-size="2.6" fill="var(--grey)" font-weight="700">spesi</text>`;
   } else {
-    donut.innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="#252e2a" stroke-width="5"/>` +
+    donut.innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--grey-line)" stroke-width="5"/>` +
       state.categories.map((c,i)=>{
         const pct = ((c.v||0) / total) * 100;
         if(pct <= 0) return '';
@@ -1635,14 +1661,14 @@ function renderBudget(){
   }
 
   document.getElementById('donut-legend').innerHTML = state.categories.slice(0,5).map((c,i)=>`
-    <div class="dl-item"><span class="dot" style="background:${colorsList[i % colorsList.length]}"></span>${c.n}<span class="v">${eurShort(c.v||0)}</span></div>`).join('');
+    <div class="dl-item"><span class="dot" style="background:${colorsList[i % colorsList.length]}"></span>${escapeHTML(c.n)}<span class="v">${eurShort(c.v||0)}</span></div>`).join('');
 
   document.getElementById('budget-cats').innerHTML = state.categories.map(c=>{
     const iconHTML = c.icSVG || categoryIconsSVG[c.n] || `<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>`;
     return `
     <div class="cat" style="min-width:134px;">
       <div class="ic" style="background:${c.bg}">${iconHTML}</div>
-      <div class="n">${c.n}</div>
+      <div class="n">${escapeHTML(c.n)}</div>
       <div class="v">${eurShort(c.v||0)} <span style="font-size:11px;color:var(--grey);font-weight:600;">/ ${eurShort(c.budget||0)}</span></div>
       <div class="progress"><i style="width:${Math.min(100, (c.v||0)/(c.budget||1)*100)}%;background:${(c.v||0)/(c.budget||1)>0.9?'var(--danger)':'var(--green)'}"></i></div>
     </div>`;
@@ -1656,7 +1682,7 @@ function renderBudget(){
       <div class="goal">
         <div class="head">
           <div class="ic" style="background:${g.bg}">${categoryIconsSVG['Altro']}</div>
-          <div class="info"><div class="n">${g.n}</div><div class="s">${g.s}</div></div>
+          <div class="info"><div class="n">${escapeHTML(g.n)}</div><div class="s">${escapeHTML(g.s)}</div></div>
           <div class="pct">${g.pct}%</div>
         </div>
         <div class="progress" style="height:8px;"><i style="width:${g.pct}%"></i></div>
@@ -1730,7 +1756,7 @@ function setType(t){
 function renderCatPick(){
   document.getElementById('cat-pick').innerHTML = catList.map((c,i)=>{
     const iconHTML = categoryIconsSVG[c.n] || categoryIconsSVG['Altro'];
-    return `<button class="${addCat===i?'on':''}" onclick="pickCat(${i})">${iconHTML} ${c.n}</button>`;
+    return `<button class="${addCat===i?'on':''}" onclick="pickCat(${i})">${iconHTML} ${escapeHTML(c.n)}</button>`;
   }).join('');
 }
 function pickCat(i){ addCat=i; renderCatPick(); }
@@ -1751,14 +1777,12 @@ function saveTx(){
   const val = parseFloat(addAmt.replace(',','.'))||0;
   if(val<=0){ toast('Inserisci un importo valido'); return; }
   const cat = addCat!=null?catList[addCat]:{n:'Altro'};
-  const desc = document.getElementById('desc').value || cat.n;
+  const desc = document.getElementById('desc').value.trim() || cat.n;
   const bgMap={'Spesa':'rgba(34, 197, 94, 0.15)','Trasporti':'rgba(37, 99, 235, 0.15)','Ristoranti':'rgba(217, 119, 6, 0.15)','Shopping':'rgba(124, 58, 237, 0.15)','Casa':'rgba(220, 38, 38, 0.15)','Abbonamenti':'rgba(225, 29, 72, 0.15)','Salute':'rgba(13, 148, 136, 0.15)','Altro':'rgba(71, 85, 105, 0.15)','Entrata':'rgba(34, 197, 94, 0.15)'};
   
-  const dStr = new Date().toISOString().split('T')[0];
-
   state.transactions.unshift({
     n:desc, c:addType==='income'?'Entrata':cat.n,
-    bg:bgMap[cat.n]||'rgba(71, 85, 105, 0.15)', amt:addType==='income'?val:-val, pos:addType==='income', date: dStr
+    bg:bgMap[cat.n]||'rgba(71, 85, 105, 0.15)', amt:addType==='income'?val:-val, pos:addType==='income', date: getLocalDateString()
   });
   state.balance += addType==='income'?val:-val;
   
