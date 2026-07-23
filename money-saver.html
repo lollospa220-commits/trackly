@@ -1045,8 +1045,21 @@ function getLocalDateString(d = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-const eur = n => '€' + n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
-const eurShort = n => '€' + Math.round(n).toLocaleString('it-IT');
+const eur = n => {
+  const abs = Math.abs(n || 0);
+  const formatted = abs.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (n < 0 ? '−€' : '€') + formatted;
+};
+
+const eurShort = n => {
+  const abs = Math.abs(n || 0);
+  const hasDec = abs % 1 !== 0;
+  const formatted = abs.toLocaleString('it-IT', {
+    minimumFractionDigits: hasDec ? 2 : 0,
+    maximumFractionDigits: 2
+  });
+  return (n < 0 ? '−€' : '€') + formatted;
+};
 
 const accentColors = [
   { name: 'Verde Smeraldo', hex: '#22c55e', deep: '#059669' },
@@ -2123,9 +2136,10 @@ function renderBills(){
 
   const dueTotal = state.billsDue ? state.billsDue.reduce((a,b)=>a+b.a,0) : 0;
   const bAmtEl = document.getElementById('bills-total');
-  const intp = Math.floor(dueTotal).toLocaleString('it-IT');
-  const dec = String(Math.round(Math.abs(dueTotal)%1*100)).padStart(2,'0');
-  bAmtEl.innerHTML = '€' + intp + '<small>,' + dec + '</small>';
+  const bParts = Math.abs(dueTotal).toFixed(2).split('.');
+  const bIntp = (dueTotal < 0 ? '−' : '') + parseInt(bParts[0], 10).toLocaleString('it-IT');
+  const bDec = bParts[1];
+  bAmtEl.innerHTML = '€' + bIntp + '<small>,' + bDec + '</small>';
   document.getElementById('bills-sub-lbl').textContent = (state.billsDue ? state.billsDue.length : 0) + ' in arrivo · ' + (state.billsPaid ? state.billsPaid.length : 0) + ' pagate';
 }
 
@@ -2256,10 +2270,14 @@ function renderBalance(){
     return; 
   }
   if(eyeIcon) eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
-  const intp=Math.floor(state.balance||0).toLocaleString('it-IT');
-  const dec=String(Math.round(Math.abs(state.balance||0)%1*100)).padStart(2,'0');
-  el.innerHTML='€'+intp+'<small>,'+dec+'</small>';
-  if(widgetEl) widgetEl.innerHTML='€'+intp+','+dec;
+
+  const val = state.balance || 0;
+  const parts = Math.abs(val).toFixed(2).split('.');
+  const intp = (val < 0 ? '−' : '') + parseInt(parts[0], 10).toLocaleString('it-IT');
+  const dec = parts[1];
+
+  el.innerHTML = '€' + intp + '<small>,' + dec + '</small>';
+  if(widgetEl) widgetEl.innerHTML = '€' + intp + ',' + dec;
 
   let incSum = 0, expSum = 0;
   if(state.transactions){
