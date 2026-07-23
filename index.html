@@ -2031,7 +2031,21 @@ function resetActiveUser(){
 }
 
 /* ---------------- Render App Components ---------------- */
+function recalculateCategoryTotals(){
+  if(!state.categories || !state.categories.length) state.categories = JSON.parse(JSON.stringify(defaultCategories));
+  state.categories.forEach(c => { c.v = 0; });
+  if(state.transactions){
+    state.transactions.forEach(t => {
+      if(!t.pos && t.amt < 0){
+        const catObj = state.categories.find(c => c.n === t.c);
+        if(catObj) catObj.v = (catObj.v || 0) + Math.abs(t.amt);
+      }
+    });
+  }
+}
+
 function renderAll(){
+  recalculateCategoryTotals();
   renderBalance();
   calculateRealBars();
   renderCats();
@@ -2387,9 +2401,13 @@ tick();
 setInterval(tick,10000);
 initUserProfiles();
 
-/* ---------------- Service worker (offline) ---------------- */
+/* ---------------- Service worker (offline & network-first) ---------------- */
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      reg.update();
+    }).catch(()=>{});
+  });
 }
 </script>
 </body>

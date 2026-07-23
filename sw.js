@@ -1,5 +1,5 @@
-/* Money Saver — service worker (offline cache) */
-const CACHE = 'money-saver-v9';
+/* Money Saver — service worker (offline cache & network-first updates) */
+const CACHE = 'money-saver-v10';
 const ASSETS = [
   'index.html',
   'money-saver.html',
@@ -10,7 +10,8 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
 });
 
 self.addEventListener('activate', e => {
@@ -20,15 +21,30 @@ self.addEventListener('activate', e => {
   );
 });
 
+/* Network-First Strategy for HTML/Scripts to ensure real-time code updates */
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      return cached || fetch(e.request).then(res => {
+  
+  const url = new URL(e.request.url);
+  const isHTML = e.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/';
+
+  if (isHTML) {
+    e.respondWith(
+      fetch(e.request).then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
         return res;
-      }).catch(() => cached);
-    })
-  );
+      }).catch(() => caches.match(e.request))
+    );
+  } else {
+    e.respondWith(
+      caches.match(e.request).then(cached => {
+        return cached || fetch(e.request).then(res => {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+          return res;
+        }).catch(() => cached);
+      })
+    );
+  }
 });
